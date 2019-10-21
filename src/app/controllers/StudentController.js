@@ -111,6 +111,18 @@ class StudentController {
         .json({ error: 'An error occurred while processing request.' });
     }
   }
+
+  async index(req, res) {
+    const { page = 1, size = 20 } = req.query;
+
+    const students = await Student.findAll({
+      limit: size,
+      offset: (page - 1) * size,
+      attributes: ['name', 'email', 'birth_date', 'weight', 'height', 'age'],
+    });
+
+    return res.json(students);
+  }
 }
 
 export default new StudentController();

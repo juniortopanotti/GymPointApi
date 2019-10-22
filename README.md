@@ -6,5 +6,10 @@ Projeto final para entrega de conclusão do bootcamp GoStack da Rocketseat.
 - Express;
 - Sequelize;
 - Yup;
+- MongoDB;
 - JWT Auth;
-
+- Yup;
+- Redis;
+- Nodemailer;
+- Lint;
+- Sentry;

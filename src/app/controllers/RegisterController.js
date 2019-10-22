@@ -127,16 +127,6 @@ class RegisterController {
       start_date: Yup.date().required(),
     });
 
-    const { id } = req.params;
-
-    const register = await Register.findByPk(id);
-
-    if (!register) {
-      return res
-        .status(400)
-        .json({ error: 'Register with informed id not exists.' });
-    }
-
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({
         error: 'Validation failed.',
@@ -172,7 +162,7 @@ class RegisterController {
 
     const registerPrice = price * duration;
 
-    await register.update({
+    await req.register.update({
       canceled_at: null,
       end_date: endDate,
       price: registerPrice,
@@ -180,7 +170,7 @@ class RegisterController {
       plan_id,
     });
 
-    return res.json(register);
+    return res.json(req.register);
   }
 
   /*
@@ -188,25 +178,15 @@ class RegisterController {
    *  registro no sistema a fim de manter um histórico.
    */
   async delete(req, res) {
-    const { id } = req.params;
-
-    const register = await Register.findByPk(id);
-
-    if (!register) {
-      return res
-        .status(400)
-        .json({ error: 'Register with informed id not exists.' });
-    }
-
-    if (register.canceled_at) {
+    if (req.register.canceled_at) {
       return res.status(400).json({
         error: 'Register already canceled.',
       });
     }
 
-    await register.update({ canceled_at: new Date() });
+    await req.register.update({ canceled_at: new Date() });
 
-    return res.json(register);
+    return res.json(req.register);
   }
 }
 

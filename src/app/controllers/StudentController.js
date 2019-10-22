@@ -36,8 +36,6 @@ class StudentController {
   }
 
   async update(req, res) {
-    const { id } = req.params;
-
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       email: Yup.string()
@@ -52,19 +50,11 @@ class StudentController {
         .required(),
     });
 
-    let student = await Student.findByPk(id);
-
-    if (!student) {
-      return res
-        .status(400)
-        .json({ error: 'Student with the id entered was not found.' });
-    }
-
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails.' });
     }
 
-    if (student.email !== req.body.email) {
+    if (req.student.email !== req.body.email) {
       const emailExists = await Student.findOne({
         where: { email: req.body.email },
       });
@@ -74,31 +64,14 @@ class StudentController {
       }
     }
 
-    student = await student.update(req.body);
+    await req.student.update(req.body);
 
-    return res.json(student);
+    return res.json(req.student);
   }
 
   async delete(req, res) {
-    try {
-      const { id } = req.params;
-
-      const student = await Student.findByPk(id);
-
-      if (!student) {
-        return res
-          .status(400)
-          .json({ error: 'Student with the id entered was not found.' });
-      }
-
-      await student.destroy();
-
-      return res.status(204).json();
-    } catch (err) {
-      return res
-        .status(500)
-        .json({ error: 'An error occurred while processing request.' });
-    }
+    await req.student.destroy();
+    return res.status(204).json();
   }
 
   async index(req, res) {

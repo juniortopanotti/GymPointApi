@@ -1,13 +1,18 @@
 import { Router } from 'express';
-
-import SessionController from './app/controllers/SessionController';
+import multer from 'multer';
 
 import authMiddleWare from './app/middlewares/auth';
+
+import SessionController from './app/controllers/SessionController';
 import StudentController from './app/controllers/StudentController';
 import PlanController from './app/controllers/PlanController';
 import RegisterController from './app/controllers/RegisterController';
+import FileController from './app/controllers/FileController';
+
+import multerConfig from './config/multer';
 
 const routes = new Router();
+const upload = multer(multerConfig);
 
 routes.post('/sessions', SessionController.store);
 
@@ -27,5 +32,7 @@ routes.post('/registers', RegisterController.store);
 routes.get('/registers', RegisterController.index);
 routes.delete('/registers/:id', RegisterController.delete);
 routes.put('/registers/:id', RegisterController.update);
+
+routes.post('/files', upload.single('file'), FileController.store);
 
 export default routes;

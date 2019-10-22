@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 
 import Student from '../models/Student';
+import File from '../models/File';
 
 class StudentController {
   async store(req, res) {
@@ -107,6 +108,13 @@ class StudentController {
       limit: size,
       offset: (page - 1) * size,
       attributes: ['name', 'email', 'birth_date', 'weight', 'height', 'age'],
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
     });
 
     return res.json(students);

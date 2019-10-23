@@ -13,6 +13,8 @@ import { Op } from 'sequelize';
 import Plan from '../models/Plan';
 import Student from '../models/Student';
 import Register from '../models/Register';
+import RegisterMail from '../jobs/RegisterMail';
+import Queue from '../../lib/Queue';
 
 class RegisterController {
   async store(req, res) {
@@ -92,6 +94,15 @@ class RegisterController {
       price: registerPrice,
     });
 
+    const mailObject = {
+      student,
+      plan,
+      registerPrice,
+      endDate,
+    };
+
+    await Queue.add(RegisterMail.key, mailObject);
+
     return res.json(registerSaved);
   }
 
@@ -99,7 +110,7 @@ class RegisterController {
     const { page = 1, size = 20 } = req.query;
 
     const registers = await Register.findAll({
-      limite: size,
+      limit: size,
       offset: (page - 1) * size,
       attributes: ['id', 'start_date', 'end_date', 'price', 'expired'],
       include: [

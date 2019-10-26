@@ -1,8 +1,9 @@
 import * as Yup from 'yup';
 
 import HelpOrder from '../models/HelpOrder';
-import User from '../models/User';
 import Student from '../models/Student';
+import Queue from '../../lib/Queue';
+import AnswerMail from '../jobs/AnswerMail';
 
 class HelpOrderAdminController {
   async update(req, res) {
@@ -25,6 +26,16 @@ class HelpOrderAdminController {
       answer_by: userId,
       answer_at: new Date(),
     });
+
+    const student = await Student.findByPk(helpOrder.student_id);
+
+    const mailObject = {
+      student,
+      question: helpOrder.question,
+      answer: req.body.answer,
+    };
+
+    await Queue.add(AnswerMail.key, mailObject);
 
     return res.json(updatedHelpOrder);
   }

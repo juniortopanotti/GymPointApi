@@ -26,13 +26,10 @@ class Database {
   }
 
   mongo() {
-    this.mongoConnections = Mongoose.connect(
-      'mongodb://192.168.99.100:27017/gympoint',
-      {
-        useNewUrlParser: true,
-        useFindAndModify: true,
-      }
-    );
+    this.mongoConnections = Mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useFindAndModify: true,
+    });
   }
 }
 

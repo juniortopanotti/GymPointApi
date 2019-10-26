@@ -39,7 +39,7 @@ class Mail {
   /* "...message"  spread operator */
   sendMail(message) {
     if (message.context) {
-      message.context.logoUrl = 'http://localhost:3333/assets/images/logo.png';
+      message.context.logoUrl = `${process.env.APP_URL}/assets/images/logo.png`;
     }
     return this.transporter.sendMail({
       ...mailConfig.default,
